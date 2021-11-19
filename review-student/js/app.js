@@ -1,6 +1,7 @@
 
 let score = 0;
-let answer = 0;
+let answer = 0; 
+let problemNum = 1;
 
 
 
@@ -47,25 +48,63 @@ function mapAnswerToPage(answerArray) {
   });
 }
 
-createMathProblem();
+createMathProblem(); 
 
-document.addEventListener('DOMContentLoaded', () => {
+function resetToStart() {
+  problemNum = 1;
+  score = 0;
+ 
+
+  let list = document.querySelector("#answers");
+  let currentQuestion = document.querySelector('#problem .expression');
+  let directions = document.querySelector('.show-hide');
+  list.classList.remove('hidden');
+  currentQuestion.classList.remove('hidden');
+  directions.classList.remove('hidden');
 
   createMathProblem();
+  updateProblemAndScore();
 
-  answers.children[0].children.forEach((element) => {
-    element.addEventListener('click', (event) => {
-    alert(event.currentTarget.innerText);
-    if (answer == event.currentTarget.innerText){
-      alert("here");
-      score++;
-    }
-  })});
+} 
+//why did this need to be here in this exact spot
+function updateProblemAndScore() {
+  let currentProblem = document.querySelector('.currentProblem');
+  currentProblem.innerText=problemNum;
 
-})
-
-function answerSelection(event) {
-
-
-
+  let currentScore = document.querySelector('.currentScore');
+  currentScore.innerText=score;
 }
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  answers.addEventListener('click',(event)=>{handleAnswerSelection(event)});
+  btnStartOver.addEventListener('click',(event)=>{resetToStart(event)});
+});
+
+
+
+function handleAnswerSelection(event) {
+  console.log(event);
+  if (event.target.tagName=='LI') {
+      console.log(score);
+      if (answer == event.target.innerText) {
+          score++;
+          console.log(score);
+      }
+      problemNum++;
+      if(problemNum > 10) {   
+        problemNum = 10;
+          updateProblemAndScore();
+          let listOfAnswers = document.querySelector("#answers");
+          let currentQuestion = document.querySelector('#problem .expression');
+          let directionElement = document.querySelector('.show-hide');
+          listOfAnswers.classList.add('hidden');
+          currentQuestion.classList.add('hidden');
+          directionElement.classList.add('hidden');
+      } else {
+        createMathProblem();
+        updateProblemAndScore();
+
+      }
+  } 
+
+} 
